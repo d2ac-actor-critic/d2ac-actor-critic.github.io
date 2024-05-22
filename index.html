@@ -118,16 +118,24 @@
     <h2 id="what-is-shared-autonomy">What is an actor critic method?</h2>
         <p>
             Actor Critic is a praadigm for solving reinforcement learning problems, where an agent interacts with an environment to align its behavior with some reward signal.<br />
-            In Actor Critic methods there are two components: an actor that takes actions in an environment, and a critic that estimates the potential return of being in a specific state and taking an action. 
+            In Actor Critic methods there are two components: 
+            
+        <ul>
+            <li>An actor that takes actions in an environment</li>
+            <li>A critic that estimates the potential return of being in a specific state and taking an action.</li>
+        </ul>
         </p>
 
     <h3 id="motivation">Difficulties with actor critic methods</h3>
     <div>
         <p>
             Compared to model-based methods, actor-critic methods often struggle to take advantage of computational scaling. 
-            In a model-based algorithm such as MPPI, if we give our algorithm additional compute, we can improve performance in two way. 
-            1. We can use random shooting to simulate more candidate trajectories with our learned model. This should decrease the variance of our estimate. 
-            2. Model-based methods go through an iterative refinment process on action proposals, gradually using the model to converge to better actions. 
+            In a model-based algorithm such as MPPI, if we give our algorithm additional compute, we can improve performance in two ways. 
+
+            <ol>
+                <li> We can use random shooting to simulate more candidate trajectories with our learned model. This should decrease the variance of our estimate. </li>
+                <li> Model-based methods go through an iterative refinment process on action proposals, gradually using the model to converge to better actions. .</li>
+            </ol>
         </p>
         <p>
             In the same way, when a diffusion model is trained on expert demonstrations (state-conditioned actions),
