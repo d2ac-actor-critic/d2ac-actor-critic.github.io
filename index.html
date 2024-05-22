@@ -115,17 +115,19 @@
          We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
          user actions while maintaining their autonomy.
          </p> -->
-    <h2 id="what-is-shared-autonomy">What is shared autonomy?</h2>
+    <h2 id="what-is-shared-autonomy">What is an actor critic method?</h2>
         <p>
-            Shared autonomy considers a setting where a user and an assistive agent work together to control a robotic system. <br />
-            Shared autonomy is particularly beneficial in settings in which the task may be difficult or even impossible for the user to perform on their own (e.g., flying a high-agility aircraft). The goal of the assistive agent is to improve the user's ability to perform the task (e.g., by avoiding crashes), and the challenge is to do so while simultaneously preserving their intent (e.g., landing at the appropriate destination).
+            Actor Critic is a praadigm for solving reinforcement learning problems, where an agent interacts with an environment to align its behavior with some reward signal.<br />
+            In Actor Critic methods there are two components: an actor that takes actions in an environment, and a critic that estimates the potential return of being in a specific state and taking an action. 
         </p>
 
-    <h2 id="motivation">Motivation</h3>
+    <h2 id="motivation">Difficulties with actor critic methods/h3>
     <div>
         <p>
-            Once trained, diffusion models can pull <strong>a noisy sample</strong> back to the <strong>training data manifold</strong>.
-            More accurately, diffusion models learn a gradient field, where a vector at each location points toward higher likelihood region in the training data distribution.
+            Compared to model-based methods, actor-critic methods often struggle to take advantage of computational scaling. 
+            In a model-based algorithm such as MPPI, if we give our algorithm additional compute, we can improve performance in two way. 
+            1. We can use random shooting to simulate more candidate trajectories with our learned model. This should decrease the variance of our estimate. 
+            2. Model-based methods go through an iterative refinment process on action proposals, gradually using the model to converge to better actions. 
         </p>
         <p>
             In the same way, when a diffusion model is trained on expert demonstrations (state-conditioned actions),
@@ -133,25 +135,16 @@
         </p>
         <!-- <img src="./media/gradient-field4.png"> -->
         <p>
-            Now, let us consider shared autonomy setting.
-            A user produces a suboptimal action \(a^h_t\), and our assistive agent needs to correct it.
-            If we pretend that the action \(a^h_t\) is <strong>the noisy action</strong>,
-            the pretrained diffusion model will correct the action to make it look more like an expert action.
-            <!-- <img src="./media/motivation2.png" alt="motivation" class="center-narrow"> -->
-        </p>
-        <p>
-            This achieves <i>assisting</i> the user by correcting its action.
-            <!-- This is exactly what we want. <br \> -->
-            Diffusion model trained on expert demonstrations should be able to serve as an assistive agent!
+            In contrast, actor-critic methods use function approxiamtion to learn both the actor and the critic. 
+            Since there is no model, it is difficult to consider candidate trajectories during action proposal. 
+            Thus, we often find that actor critic methods struggle in noisy environments. If the actor and critic are not similarly expressive and powerful, then the algorithm will fall over due to its weakest link. 
         </p>
     </div>
 
     <h2 id="method">Method</h2>
     <div>
         <p>
-            A standard diffusion model runs the reverse diffusion (i.e., denoising) process from Gaussian distribution to generate a sample.
-            Sampling from Gaussian distribution is equivalent to applying the forward diffusion (i.e., noising) process to an arbitrary sample.
-            Thus, this standard generation procedure can be seen as applying the forward and then reverse diffusion process to a sample.
+            D2AC improves the traditioanl actor critic pipline by introducing two key components: a diffusion actor and a distributional critic. 
         </p>
         <p>
             We consider applying the forward diffusion process on the user action <strong>partially</strong> (quantified via the <i>forward diffusion ratio</i> \(\gamma\)),
