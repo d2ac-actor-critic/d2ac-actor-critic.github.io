@@ -1,287 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-  <meta charset="utf-8">
-  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
-  <!-- Replace the content tag with appropriate information -->
-  <meta name="description" content="DESCRIPTION META TAG">
-  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG"/>
-  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG"/>
-  <meta property="og:url" content="URL OF THE WEBSITE"/>
-  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
-  <meta property="og:image" content="static/image/your_banner_image.png" />
-  <meta property="og:image:width" content="1200"/>
-  <meta property="og:image:height" content="630"/>
+    <meta charset="UTF-8">
+    <title>To the Noise and Back: Diffusion for Shared Autonomy</title>
+    <meta name="description"
+          content="Shared autonomy is an operational concept in which a user and an autonomous agent collaboratively control a robotic system.
+                It provides a number of advantages over the extremes of full-teleoperation and full-autonomy in many settings.
+                Traditional approaches to shared autonomy rely on knowledge of the environment dynamics,
+                a discrete space of user goals that is known a priori, or knowledge of the user's policy---assumptions that are unrealistic in many domains.
+                Recent works relax these assumptions by formulating shared autonomy with model-free deep reinforcement learning (RL), and train the agent's policy that produces an action close to that of the user while satisfying value function constraints.
+                These formulations inherently rely on human-in-the-loop training to learn the assistant's policy and, in practice, replace the user with a surrogate policy for the sake of training efficiency.
+                In effect, this trades one difficulty for another. While we no longer need knowledge of the goal space (e.g., that the goals are discrete or constrained), we do need knowledge of  a task-specific reward function to train the policy. Unfortunately, such reward specification can be a difficult and brittle process.
+                In this paper, we present a new approach to shared autonomy that employs a modulation of the forward and reverse diffusion process of diffusion models.
+                Our approach does not assume known environment dynamics or the space of user goals, and in contrast to previous work,
+                it does not require any reward feedback, nor does it require access to the user's policy (surrogate or otherwise) during training.
+                Instead, our framework learns a distribution over a potentially multimodal space of desired behaviors.
+                It then employs a diffusion model to adapt the user's actions to a sample from this distribution. Crucially,
+                we show that it is possible to carry out this process in a manner that preserves the user's control authority.
+                We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
+                user actions while maintaining their autonomy.
+                ">
 
+    <meta name="keywords" content="Deep Reinforcement Learning, Deep Learning, Domain Adaptation, Generalization">
+    <meta name="author" content="Takuma Yoneda (takuma@ttic.edu), Luzhe Sun (luzhesun@uchicago.edu)">
+    <meta property="og:title" content="To the Noise and Back: Diffusion for Shared Autonomy">
+    <meta property="og:image" content="media/thumbnail.jpg">
+    <meta name="twitter:creator" content="@takuma_yoneda">
+    <meta name="twitter:card" content="summary">
+    <meta property="og:description"
+          content="Shared autonomy is an operational concept in which a user and an autonomous agent collaboratively control a robotic system.
+                It provides a number of advantages over the extremes of full-teleoperation and full-autonomy in many settings.
+                Traditional approaches to shared autonomy rely on knowledge of the environment dynamics,
+                a discrete space of user goals that is known a priori, or knowledge of the user's policy---assumptions that are unrealistic in many domains.
+                Recent works relax these assumptions by formulating shared autonomy with model-free deep reinforcement learning (RL), and train the agent's policy that produces an action close to that of the user while satisfying value function constraints.
+                These formulations inherently rely on human-in-the-loop training to learn the assistant's policy and, in practice, replace the user with a surrogate policy for the sake of training efficiency.
+                In effect, this trades one difficulty for another. While we no longer need knowledge of the goal space (e.g., that the goals are discrete or constrained), we do need knowledge of  a task-specific reward function to train the policy. Unfortunately, such reward specification can be a difficult and brittle process.
+                In this paper, we present a new approach to shared autonomy that employs a modulation of the forward and reverse diffusion process of diffusion models.
+                Our approach does not assume known environment dynamics or the space of user goals, and in contrast to previous work,
+                it does not require any reward feedback, nor does it require access to the user's policy (surrogate or otherwise) during training.
+                Instead, our framework learns a distribution over a potentially multimodal space of desired behaviors.
+                It then employs a diffusion model to adapt the user's actions to a sample from this distribution. Crucially,
+                we show that it is possible to carry out this process in a manner that preserves the user's control authority.
+                We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
+                user actions while maintaining their autonomy.
+                ">
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
 
-  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
-  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
-  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
-  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <!-- Keywords for your paper to be indexed by-->
-  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-  <title>Academic Project Page</title>
-  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-  rel="stylesheet">
-
-  <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="static/css/index.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
-  <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script src="static/js/bulma-carousel.min.js"></script>
-  <script src="static/js/bulma-slider.min.js"></script>
-  <script src="static/js/index.js"></script>
 </head>
 <body>
-
-
-  <section class="hero">
-    <div class="hero-body">
-      <div class="container is-max-desktop">
-        <div class="columns is-centered">
-          <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">Academic Project Page</h1>
-            <div class="is-size-5 publication-authors">
-              <!-- Paper authors -->
-              <span class="author-block">
-                <a href="FIRST AUTHOR PERSONAL LINK" target="_blank">First Author</a><sup>*</sup>,</span>
-                <span class="author-block">
-                  <a href="SECOND AUTHOR PERSONAL LINK" target="_blank">Second Author</a><sup>*</sup>,</span>
-                  <span class="author-block">
-                    <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Third Author</a>
-                  </span>
-                  </div>
-
-                  <div class="is-size-5 publication-authors">
-                    <span class="author-block">Institution Name<br>Conferance name and year</span>
-                    <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
-                  </div>
-
-                  <div class="column has-text-centered">
-                    <div class="publication-links">
-                         <!-- Arxiv PDF link -->
-                      <span class="link-block">
-                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"
-                        class="external-link button is-normal is-rounded is-dark">
-                        <span class="icon">
-                          <i class="fas fa-file-pdf"></i>
-                        </span>
-                        <span>Paper</span>
-                      </a>
-                    </span>
-
-                    <!-- Supplementary PDF link -->
-                    <span class="link-block">
-                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fas fa-file-pdf"></i>
-                      </span>
-                      <span>Supplementary</span>
-                    </a>
-                  </span>
-
-                  <!-- Github link -->
-                  <span class="link-block">
-                    <a href="https://github.com/YOUR REPO HERE" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fab fa-github"></i>
-                    </span>
-                    <span>Code</span>
-                  </a>
-                </span>
-
-                <!-- ArXiv abstract Link -->
-                <span class="link-block">
-                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
-                  class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
-            </div>
-          </div>
+<article>
+    <section id="frontmatter">
+        <h1>To the Noise and Back:</br></br>Diffusion for Shared Autonomy</h1>
+        <h2 id="authors" style="margin-bottom: 0;">
+            <a href="https://takuma.yoneda.xyz">Takuma Yoneda</a><sup>1</sup>,
+            <a href="https://tllokn.github.io/">Luzhe Sun</a><sup>2</sup>,
+            <a href="https://www.episodeyang.com">Ge Yang</a><sup>3, 4</sup>,
+            <a href="https://bstadie.github.io">Bradly C. Stadie</a><sup>5</sup>,
+            <a href="https://ttic.edu/walter">Matthew R. Walter</a><sup>1</sup>
+        </h2>
+        <h3 style="margin-top: 10px;"><sup>1</sup>TTI-Chicago, <sup>2</sup>University of Chicago, <sup>3</sup>MIT CSAIL, <sup>4</sup>IAIFI, <sup>5</sup>Northwestern University </h3>
+        <h3 id="links">
+            <a href="https://github.com/ripl/diffusion-for-shared-autonomy">CODE</a>
+            <!-- <a href="https://github.com/ripl/diffusion-shared-autonomy">CODE</a> -->
+            |<a href="http://arxiv.org/abs/2302.12244">PAPER</a>
+        </h3>
+        <h2>Overview</h2>
+        <p>
+            We present a new approach to learn an assistive policy based on diffusion models.
+            With the partial forward-and-reverse diffusion process we introduce,
+            the diffusion model pretrained on expert demonstrations
+            can improve user input (avoiding failures, enabling smoother control) while preserving their intention.</p>
+        <div style="display: flex; flex-direction: row">
+            <!--This empty video is to center these 2 video-->
+<!--            <video></video>-->
+            <video autoplay muted loop playsinline width="auto" height="300" class="center">
+                <source src="media/ShortVideo.webm">
+            </video>
+            <video autoplay muted loop playsinline width="auto" height="300" class="center">
+                <source src="media/ur5.webm">
+            </video>
+            <video></video>
         </div>
-      </div>
+
+<!--        <p>-->
+<!--            <video autoplay muted loop playsinline width="30%" height="auto" class="center">-->
+<!--                <source src="media/ShortVideo.webm">-->
+<!--            </video>-->
+<!--        </p>-->
+<!--        <p>-->
+<!--            <video autoplay muted loop playsinline width="30%" height="auto" class="center">-->
+<!--                <source src="media/ur5.webm">-->
+<!--            </video>-->
+<!--        </p>-->
+        <!-- <iframe class="video" width="100%" height="338px" src="https://www.youtube.com/embed/KtvTt3U5bME?rel=0"
+             frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+             allowfullscreen></iframe> -->
+    </section>
+    <!-- <h2 id="abstract">Abstract</h2>
+         <p>
+         Shared autonomy is an operational concept in which a user and an autonomous agent collaboratively control a robotic system.
+         It provides a number of advantages over the extremes of full-teleoperation and full-autonomy in many settings.
+         Traditional approaches to shared autonomy rely on knowledge of the environment dynamics,
+         a discrete space of user goals that is known a priori, or knowledge of the user's policy---assumptions that are unrealistic in many domains.
+         Recent works relax these assumptions by formulating shared autonomy with model-free deep reinforcement learning (RL), and train the agent's policy that produces an action close to that of the user while satisfying value function constraints.
+         These formulations inherently rely on human-in-the-loop training to learn the assistant's policy and, in practice, replace the user with a surrogate policy for the sake of training efficiency.
+         In effect, this trades one difficulty for another. While we no longer need knowledge of the goal space (e.g., that the goals are discrete or constrained), we do need knowledge of  a task-specific reward function to train the policy. Unfortunately, such reward specification can be a difficult and brittle process.
+         In this paper, we present a new approach to shared autonomy that employs a modulation of the forward and reverse diffusion process of diffusion models.
+         Our approach does not assume known environment dynamics or the space of user goals, and in contrast to previous work,
+         it does not require any reward feedback, nor does it require access to the user's policy (surrogate or otherwise) during training.
+         Instead, our framework learns a distribution over a potentially multimodal space of desired behaviors.
+         It then employs a diffusion model to adapt the user's actions to a sample from this distribution. Crucially,
+         we show that it is possible to carry out this process in a manner that preserves the user's control authority.
+         We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
+         user actions while maintaining their autonomy.
+         </p> -->
+    <h2 id="what-is-shared-autonomy">What is shared autonomy?</h2>
+        <p>
+            Shared autonomy considers a setting where a user and an assistive agent work together to control a robotic system. <br />
+            Shared autonomy is particularly beneficial in settings in which the task may be difficult or even impossible for the user to perform on their own (e.g., flying a high-agility aircraft). The goal of the assistive agent is to improve the user's ability to perform the task (e.g., by avoiding crashes), and the challenge is to do so while simultaneously preserving their intent (e.g., landing at the appropriate destination).
+        </p>
+
+    <h2 id="motivation">Motivation</h3>
+    <div>
+        <p>
+            Once trained, diffusion models can pull <strong>a noisy sample</strong> back to the <strong>training data manifold</strong>.
+            More accurately, diffusion models learn a gradient field, where a vector at each location points toward higher likelihood region in the training data distribution.
+        </p>
+        <p>
+            In the same way, when a diffusion model is trained on expert demonstrations (state-conditioned actions),
+            it should be able to pull <strong>a noisy action</strong> closer to the <strong>expert action manifold</strong>.
+        </p>
+        <!-- <img src="./media/gradient-field4.png"> -->
+        <p>
+            Now, let us consider shared autonomy setting.
+            A user produces a suboptimal action \(a^h_t\), and our assistive agent needs to correct it.
+            If we pretend that the action \(a^h_t\) is <strong>the noisy action</strong>,
+            the pretrained diffusion model will correct the action to make it look more like an expert action.
+            <!-- <img src="./media/motivation2.png" alt="motivation" class="center-narrow"> -->
+        </p>
+        <p>
+            This achieves <i>assisting</i> the user by correcting its action.
+            <!-- This is exactly what we want. <br \> -->
+            Diffusion model trained on expert demonstrations should be able to serve as an assistive agent!
+        </p>
     </div>
-  </div>
-</section>
+
+    <h2 id="method">Method</h2>
+    <div>
+        <p>
+            A standard diffusion model runs the reverse diffusion (i.e., denoising) process from Gaussian distribution to generate a sample.
+            Sampling from Gaussian distribution is equivalent to applying the forward diffusion (i.e., noising) process to an arbitrary sample.
+            Thus, this standard generation procedure can be seen as applying the forward and then reverse diffusion process to a sample.
+        </p>
+        <p>
+            We consider applying the forward diffusion process on the user action <strong>partially</strong> (quantified via the <i>forward diffusion ratio</i> \(\gamma\)),
+            followed by the reverse diffusion process for the same number of steps.
+            The property of generated action changes according to \(\gamma\):
+            <!-- In this procedure, \(k\) controls the trade-off between -->
+            <!-- This amounts to adding Gaussian noise to the user action iteratively. -->
+        </p>
+        <ul>
+            <li>When \(\gamma\) is small, the resulting action is close to the user action (i.e., high fidelity to user's intention) </li>
+            <li>When \(\gamma\) is large, the resulting action has high likelihood in expert distribution (i.e., high conformity to expert)</li>
+        </ul>
 
 
-<!-- Teaser video-->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <video poster="" id="tree" autoplay controls muted loop height="100%">
-        <!-- Your video here -->
-        <source src="static/videos/banner_video.mp4"
-        type="video/mp4">
-      </video>
-      <h2 class="subtitle has-text-centered">
-        Aliquam vitae elit ullamcorper tellus egestas pellentesque. Ut lacus tellus, maximus vel lectus at, placerat pretium mi. Maecenas dignissim tincidunt vestibulum. Sed consequat hendrerit nisl ut maximus. 
-      </h2>
+        With a diffusion model pretrained on expert demonstrations (state-conditioned actions),
+        we apply this partial diffusion procedure on the user action \(a^h_t\) to generate a corrected shared action \(a^s_t\).
+        <img src="./media/fwd-rev-diffusion2.png" width="60%" height="auto" alt="fwd-rev-diffusion" class="center">
     </div>
-  </div>
-</section>
-<!-- End teaser video -->
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ullamcorper tellus sed ante aliquam tempus. Etiam porttitor urna feugiat nibh elementum, et tempor dolor mattis. Donec accumsan enim augue, a vulputate nisi sodales sit amet. Proin bibendum ex eget mauris cursus euismod nec et nibh. Maecenas ac gravida ante, nec cursus dui. Vivamus purus nibh, placerat ac purus eget, sagittis vestibulum metus. Sed vestibulum bibendum lectus gravida commodo. Pellentesque auctor leo vitae sagittis suscipit.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End paper abstract -->
 
 
-<!-- Image carousel -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <img src="static/images/carousel1.jpg" alt="MY ALT TEXT" style="max-width: 100%;" />
-      <h2 class="subtitle has-text-centered">
-        Standard image description.
-      </h2>
-    </div>
-  </div>
-</section>
+    <h2 id="experiments">Experiments</h2>
+    <p>
+        We evaluate our algorithm in four shared autonomy environments including a (a) 2D Control task in
+        which an agent navigates to one of two different goals, (b) Lunar Lander that tasks a drone with
+        landing at a designated location, (c) a Lunar Reacher variant in which the objective is to reach a
+        designated region in the environment, and (d) Block Pushing, in which the objective is to use a robot
+        arm to push an object into one of two different goal regions.
 
-<!-- End image carousel -->
+        <img src="./media/exp_env.jpg" width="60%" height="auto" alt="environment" class="center-wide">
+    </p>
+    <p>
+        The following plots show success rate vs forward diffusion ratio \(\gamma\)
+        for noisy expert. The dashed blue lines denote the success rates of
+        the original expert, while the dotted blue lines are the success rate of our model with
+        <i>full</i> diffusion (i.e., \(\gamma = 1.0\) ).
+
+        <img src="./media/exp_plot.jpg" width="50%" height="auto" alt="plot" class="center">
+    </p>
+    <p>
+        Following is the statistics information for three environments about different pilots with and without assistance,
+        where we show the results for our chosen value \(\gamma = 0.4\) for Lunar Lander and Lunar Reacher and \(\gamma = 0.2\)
+        for Block Pushing.
+        Each entry corresponds to \(10\) episodes across \(30\) random seeds.
+        <img src="./media/BarPlot.png" width="70%" height="auto" alt="main-table" class="center">
+    </p>
 
 
 
 
-<!-- Youtube video -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <!-- Paper video. -->
-      <h2 class="title is-3">Video Presentation</h2>
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          
-          <div class="publication-video">
-            <!-- Youtube embed code here -->
-            <iframe src="https://www.youtube.com/embed/JkaxUblCGz0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End youtube video -->
+    <h2>BibTex</h2>
+    <pre>
+@inproceedings{yoneda2023diffusha,
+    author = {Takuma Yoneda and
+              Luzhe Sun and
+              Ge Yang and
+              Bradly C. Stadie and
+              Matthew R. Walter},
+    title = {To the Noise and Back: Diffusion for Shared Autonomy},
+    booktitle = {Robotics: Science and Systems XIX, Daegu, Republic of Korea, July
+    10-14, 2023},
+    year = {2023}
+}</pre>
 
-
-<!-- Video carousel -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3">Another Carousel</h2>
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-video1">
-          <video poster="" id="video1" autoplay controls muted loop height="100%">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel1.mp4"
-            type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-video2">
-          <video poster="" id="video2" autoplay controls muted loop height="100%">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel2.mp4"
-            type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-video3">
-          <video poster="" id="video3" autoplay controls muted loop height="100%">\
-            <!-- Your video file here -->
-            <source src="static/videos/carousel3.mp4"
-            type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End video carousel -->
-
-
-
-
-
-
-<!-- Paper poster -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title">Poster</h2>
-
-      <iframe  src="static/pdfs/sample.pdf" width="100%" height="550">
-          </iframe>
-        
-      </div>
-    </div>
-  </section>
-<!--End paper poster -->
-
-
-<!--BibTex citation -->
-  <section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
-      <h2 class="title">BibTeX</h2>
-      <pre><code>BibTex Code Here</code></pre>
-    </div>
-</section>
-<!--End BibTex citation -->
-
-
-  <footer class="footer">
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-
-          <p>
-            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
-            You are free to borrow the of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- Statcounter tracking code -->
-  
-<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
-
-    <!-- End of Statcounter Code -->
-
-  </body>
-  </html>
+</article>
+</body>
+</html>
