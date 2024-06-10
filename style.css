@@ -48,6 +48,14 @@ article {
     width: 50%;
 }
 
+.section {
+    margin-bottom: 40px; /* Adds space below each section */
+}
+
+.section h2 {
+    margin-top: 20px; /* Adds space above each new subsection heading */
+}
+
 #frontmatter {
     display: contents
 }
@@ -131,7 +139,8 @@ article {
 }
 
 h1 {
-    font-size: 250%;
+    font-size: 200%;
+    margin-bottom: 0;
 }
 
 h2 {

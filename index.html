@@ -4,46 +4,16 @@
     <meta charset="UTF-8">
     <title>D2AC: Diffusion Actor meets Distributional Critic</title>
     <meta name="description"
-          content="Shared autonomy is an operational concept in which a user and an autonomous agent collaboratively control a robotic system.
-                It provides a number of advantages over the extremes of full-teleoperation and full-autonomy in many settings.
-                Traditional approaches to shared autonomy rely on knowledge of the environment dynamics,
-                a discrete space of user goals that is known a priori, or knowledge of the user's policy---assumptions that are unrealistic in many domains.
-                Recent works relax these assumptions by formulating shared autonomy with model-free deep reinforcement learning (RL), and train the agent's policy that produces an action close to that of the user while satisfying value function constraints.
-                These formulations inherently rely on human-in-the-loop training to learn the assistant's policy and, in practice, replace the user with a surrogate policy for the sake of training efficiency.
-                In effect, this trades one difficulty for another. While we no longer need knowledge of the goal space (e.g., that the goals are discrete or constrained), we do need knowledge of  a task-specific reward function to train the policy. Unfortunately, such reward specification can be a difficult and brittle process.
-                In this paper, we present a new approach to shared autonomy that employs a modulation of the forward and reverse diffusion process of diffusion models.
-                Our approach does not assume known environment dynamics or the space of user goals, and in contrast to previous work,
-                it does not require any reward feedback, nor does it require access to the user's policy (surrogate or otherwise) during training.
-                Instead, our framework learns a distribution over a potentially multimodal space of desired behaviors.
-                It then employs a diffusion model to adapt the user's actions to a sample from this distribution. Crucially,
-                we show that it is possible to carry out this process in a manner that preserves the user's control authority.
-                We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
-                user actions while maintaining their autonomy.
-                ">
+          content="We develop a new model-free reinforcement learning (RL) algorithm: D2AC. 
+          Motivated by recent advances in model-based RL, we make two adjustments to the typical actor critic RL pipeline. 
+          First, we learn distributional critics with a novel fusion of distributional RL and clipped double Q-learning. 
+          Second, we use a diffusion model to parameterize the policy, and derive an efficient method for aligning the diffusion process with policy improvement. 
+          These changes are highly effective, resulting in highly performant model-free policies on a benchmark of eighteen hard RL tasks, 
+          including Humanoid, Dog, and Shadow Hand domains, spanning both dense-reward and goal-conditioned RL scenarios. D2AC significantly closes the performance gap between model-free and model-based RL methods, 
+          while being at least four times faster to run than model-based counterparts.">
 
-    <meta name="keywords" content="Deep Reinforcement Learning, Deep Learning, Domain Adaptation, Generalization">
-    <meta name="author" content="Takuma Yoneda (takuma@ttic.edu), Luzhe Sun (luzhesun@uchicago.edu)">
+    <meta name="keywords" content="Actor Critic, Reinforcement Learning, Diffusion Models">
     <meta property="og:title" content="D2AC: Diffusion Actor meets Distributional Critic">
-    <meta property="og:image" content="media/thumbnail.jpg">
-    <meta name="twitter:creator" content="@takuma_yoneda">
-    <meta name="twitter:card" content="summary">
-    <meta property="og:description"
-          content="Shared autonomy is an operational concept in which a user and an autonomous agent collaboratively control a robotic system.
-                It provides a number of advantages over the extremes of full-teleoperation and full-autonomy in many settings.
-                Traditional approaches to shared autonomy rely on knowledge of the environment dynamics,
-                a discrete space of user goals that is known a priori, or knowledge of the user's policy---assumptions that are unrealistic in many domains.
-                Recent works relax these assumptions by formulating shared autonomy with model-free deep reinforcement learning (RL), and train the agent's policy that produces an action close to that of the user while satisfying value function constraints.
-                These formulations inherently rely on human-in-the-loop training to learn the assistant's policy and, in practice, replace the user with a surrogate policy for the sake of training efficiency.
-                In effect, this trades one difficulty for another. While we no longer need knowledge of the goal space (e.g., that the goals are discrete or constrained), we do need knowledge of  a task-specific reward function to train the policy. Unfortunately, such reward specification can be a difficult and brittle process.
-                In this paper, we present a new approach to shared autonomy that employs a modulation of the forward and reverse diffusion process of diffusion models.
-                Our approach does not assume known environment dynamics or the space of user goals, and in contrast to previous work,
-                it does not require any reward feedback, nor does it require access to the user's policy (surrogate or otherwise) during training.
-                Instead, our framework learns a distribution over a potentially multimodal space of desired behaviors.
-                It then employs a diffusion model to adapt the user's actions to a sample from this distribution. Crucially,
-                we show that it is possible to carry out this process in a manner that preserves the user's control authority.
-                We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
-                user actions while maintaining their autonomy.
-                ">
     <link rel="stylesheet" href="./style.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script type="text/javascript" id="MathJax-script" async
@@ -54,173 +24,29 @@
 <body>
 <article>
     <section id="frontmatter">
-        <h1>D2AC: Diffusion Actor Meets Distributional Critic</h1>
-        <h2 id="authors" style="margin-bottom: 0;">
-            <a href="https://google.com">Author 1</a><sup>1</sup>,
-            <a href="https://google.com">Author 2</a><sup>1</sup>
-        </h2>
-        <h3 style="margin-top: 10px;"><sup>1</sup>University 1, <sup>2</sup>University 2</h3>
-        <h3 id="links">
-            <a href="https://google.com">CODE</a>
-            <!-- <a href="https://github.com/ripl/diffusion-shared-autonomy">CODE</a> -->
-            |<a href="http:/google.com">PAPER</a>
-        </h3>
-        <h2>Overview</h2>
-        <p>
-            We present a new approach to learn an assistive policy based on diffusion models.
-            With the partial forward-and-reverse diffusion process we introduce,
-            the diffusion model pretrained on expert demonstrations
-            can improve user input (avoiding failures, enabling smoother control) while preserving their intention.</p>
-        <div style="display: flex; flex-direction: row">
-            <!--This empty video is to center these 2 video-->
-<!--            <video></video>-->
-            <video autoplay muted loop playsinline width="auto" height="300" class="center">
-                <source src="media/ShortVideo.webm">
-            </video>
-            <video autoplay muted loop playsinline width="auto" height="300" class="center">
-                <source src="media/ur5.webm">
-            </video>
-            <video></video>
-        </div>
-
-<!--        <p>-->
-<!--            <video autoplay muted loop playsinline width="30%" height="auto" class="center">-->
-<!--                <source src="media/ShortVideo.webm">-->
-<!--            </video>-->
-<!--        </p>-->
-<!--        <p>-->
-<!--            <video autoplay muted loop playsinline width="30%" height="auto" class="center">-->
-<!--                <source src="media/ur5.webm">-->
-<!--            </video>-->
-<!--        </p>-->
-        <!-- <iframe class="video" width="100%" height="338px" src="https://www.youtube.com/embed/KtvTt3U5bME?rel=0"
-             frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-             allowfullscreen></iframe> -->
+        <h1>D2 Actor Critic:</h1>
+        <h1 style="margin-top: 20px;">Diffusion Actor Meets Distributional Critic</h1>
+        <h2 style="margin-top: 30px;">Abstract</h2>
     </section>
-    <!-- <h2 id="abstract">Abstract</h2>
-         <p>
-         Shared autonomy is an operational concept in which a user and an autonomous agent collaboratively control a robotic system.
-         It provides a number of advantages over the extremes of full-teleoperation and full-autonomy in many settings.
-         Traditional approaches to shared autonomy rely on knowledge of the environment dynamics,
-         a discrete space of user goals that is known a priori, or knowledge of the user's policy---assumptions that are unrealistic in many domains.
-         Recent works relax these assumptions by formulating shared autonomy with model-free deep reinforcement learning (RL), and train the agent's policy that produces an action close to that of the user while satisfying value function constraints.
-         These formulations inherently rely on human-in-the-loop training to learn the assistant's policy and, in practice, replace the user with a surrogate policy for the sake of training efficiency.
-         In effect, this trades one difficulty for another. While we no longer need knowledge of the goal space (e.g., that the goals are discrete or constrained), we do need knowledge of  a task-specific reward function to train the policy. Unfortunately, such reward specification can be a difficult and brittle process.
-         In this paper, we present a new approach to shared autonomy that employs a modulation of the forward and reverse diffusion process of diffusion models.
-         Our approach does not assume known environment dynamics or the space of user goals, and in contrast to previous work,
-         it does not require any reward feedback, nor does it require access to the user's policy (surrogate or otherwise) during training.
-         Instead, our framework learns a distribution over a potentially multimodal space of desired behaviors.
-         It then employs a diffusion model to adapt the user's actions to a sample from this distribution. Crucially,
-         we show that it is possible to carry out this process in a manner that preserves the user's control authority.
-         We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
-         user actions while maintaining their autonomy.
-         </p> -->
-    <h2 id="what-is-shared-autonomy">What is an actor critic method?</h2>
-        <p>
-            Actor Critic is a praadigm for solving reinforcement learning problems, where an agent interacts with an environment to align its behavior with some reward signal.<br />
-            In Actor Critic methods there are two components: <br />
-            
-        <ul>
-            <li>An actor that takes actions in an environment</li>
-            <li>A critic that estimates the potential return of being in a specific state and taking an action.</li>
-        </ul>
-        </p>
-
-    <h3 id="motivation">Difficulties with actor critic methods</h3>
-    <div>
-        <p>
-            Compared to model-based methods, actor-critic methods often struggle to take advantage of computational scaling. 
-            In a model-based algorithm such as MPPI, if we give our algorithm additional compute, we can improve performance in two ways. 
-
-            <ol>
-                <li> We can use random shooting to simulate more candidate trajectories with our learned model. This should decrease the variance of our estimate. </li>
-                <li> Model-based methods go through an iterative refinment process on action proposals, gradually using the model to converge to better actions. .</li>
-            </ol>
-        </p>
-        <p>
-            In the same way, when a diffusion model is trained on expert demonstrations (state-conditioned actions),
-            it should be able to pull <strong>a noisy action</strong> closer to the <strong>expert action manifold</strong>.
-        </p>
-        <!-- <img src="./media/gradient-field4.png"> -->
-        <p>
-            In contrast, actor-critic methods use function approxiamtion to learn both the actor and the critic. 
-            Since there is no model, it is difficult to consider candidate trajectories during action proposal. 
-            Thus, we often find that actor critic methods struggle in noisy environments. If the actor and critic are not similarly expressive and powerful, then the algorithm will fall over due to its weakest link. 
-        </p>
-    </div>
-
-    <h2 id="method">Method</h2>
-    <div>
-        <p>
-            D2AC improves the traditioanl actor critic pipline by introducing two key components: a diffusion actor and a distributional critic. 
-        </p>
-        <p>
-            We consider applying the forward diffusion process on the user action <strong>partially</strong> (quantified via the <i>forward diffusion ratio</i> \(\gamma\)),
-            followed by the reverse diffusion process for the same number of steps.
-            The property of generated action changes according to \(\gamma\):
-            <!-- In this procedure, \(k\) controls the trade-off between -->
-            <!-- This amounts to adding Gaussian noise to the user action iteratively. -->
-        </p>
-        <ul>
-            <li>When \(\gamma\) is small, the resulting action is close to the user action (i.e., high fidelity to user's intention) </li>
-            <li>When \(\gamma\) is large, the resulting action has high likelihood in expert distribution (i.e., high conformity to expert)</li>
-        </ul>
-
-
-        With a diffusion model pretrained on expert demonstrations (state-conditioned actions),
-        we apply this partial diffusion procedure on the user action \(a^h_t\) to generate a corrected shared action \(a^s_t\).
-        <img src="./media/fwd-rev-diffusion2.png" width="60%" height="auto" alt="fwd-rev-diffusion" class="center">
-    </div>
-
-
-    <h2 id="experiments">Experiments</h2>
     <p>
-        We evaluate our algorithm in four shared autonomy environments including a (a) 2D Control task in
-        which an agent navigates to one of two different goals, (b) Lunar Lander that tasks a drone with
-        landing at a designated location, (c) a Lunar Reacher variant in which the objective is to reach a
-        designated region in the environment, and (d) Block Pushing, in which the objective is to use a robot
-        arm to push an object into one of two different goal regions.
-
-        <img src="./media/exp_env.jpg" width="60%" height="auto" alt="environment" class="center-wide">
-    </p>
-    <p>
-        The following plots show success rate vs forward diffusion ratio \(\gamma\)
-        for noisy expert. The dashed blue lines denote the success rates of
-        the original expert, while the dotted blue lines are the success rate of our model with
-        <i>full</i> diffusion (i.e., \(\gamma = 1.0\) ).
-
-        <img src="./media/exp_plot.jpg" width="50%" height="auto" alt="plot" class="center">
-    </p>
-    <p>
-        Following is the statistics information for three environments about different pilots with and without assistance,
-        where we show the results for our chosen value \(\gamma = 0.4\) for Lunar Lander and Lunar Reacher and \(\gamma = 0.2\)
-        for Block Pushing.
-        Each entry corresponds to \(10\) episodes across \(30\) random seeds.
-        <img src="./media/BarPlot.png" width="70%" height="auto" alt="main-table" class="center">
+    We develop a new model-free reinforcement learning (RL) algorithm: <b>D2AC</b>. Motivated by recent advances in model-based RL, we make two adjustments to the typical actor critic RL pipeline. 
+    First, we learn distributional critics with a novel fusion of distributional RL and clipped double Q-learning. 
+    Second, we use a diffusion model to parameterize the policy, and derive an efficient method for aligning the diffusion process with policy improvement. 
+    These changes are highly effective, resulting in highly performant model-free policies on a benchmark of eighteen hard RL tasks, 
+    including Humanoid, Dog, and Shadow Hand domains, spanning both dense-reward and goal-conditioned RL scenarios. 
+    D2AC significantly closes the performance gap between model-free and model-based RL methods, 
+    while being at least four times faster to run than model-based counterparts.
     </p>
 
+    <h2>What is an actor critic method?</h2>
+    <p>
+        <br>Actor Critic is a class of methods for solving reinforcement learning problems, where an agent interacts with an environment to maximize the cumulative reward signals.
+        <br>In Actor Critic methods, there are two components: (i) an actor that takes actions in an environment; (ii) a critic that estimates the potential return of being in a specific state and taking an action.
+    </p>
 
-     <!-- 
-
-        <h2>BibTex</h2>
-    <pre>
-@inproceedings{yoneda2023diffusha,
-    author = {Takuma Yoneda and
-              Luzhe Sun and
-              Ge Yang and
-              Bradly C. Stadie and
-              Matthew R. Walter},
-    title = {D2AC: Diffusion Actor meets Distributional Critic},
-    booktitle = {Robotics: Science and Systems XIX, Daegu, Republic of Korea, July
-    10-14, 2023},
-    year = {2023}
-}</pre>
-
-    
-         -->
-
-
-
+    <p>
+        <img src="./media/d2ac-web-viz.png" width="95%" height="auto" alt="d2ac-overall" class="center">
+    </p>
 
 </article>
 </body>
