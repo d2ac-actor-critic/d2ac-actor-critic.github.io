@@ -26,7 +26,7 @@
     <section id="frontmatter">
         <h1>D2 Actor Critic:</h1>
         <h1 style="margin-top: 20px;">Diffusion Actor Meets Distributional Critic</h1>
-        <h2 style="margin-top: 30px;">Abstract</h2>
+        <h2 style="margin-top: 30px;"></h2>
     </section>
     <p>
     We develop a new model-free reinforcement learning (RL) algorithm: <b>D2AC</b>. Motivated by recent advances in model-based RL, we make two adjustments to the typical actor critic RL pipeline. 
@@ -38,16 +38,70 @@
     while being at least four times faster to run than model-based counterparts.
     </p>
 
-    <h2>What is an actor critic method?</h2>
+    <p>
+        <img src="./media/d2ac-web-viz.png" width="95%" height="auto" alt="d2ac-overall">
+    </p>
+
+    <h2>What is an Actor-Critic method?</h2>
     <p>
         <br>Actor Critic is a class of methods for solving reinforcement learning problems, where an agent interacts with an environment to maximize the cumulative reward signals.
-        <br>In Actor Critic methods, there are two components: (i) an actor that takes actions in an environment; (ii) a critic that estimates the potential return of being in a specific state and taking an action.
+        <br>In Actor Critic methods, there are only two components: (i) an actor that takes actions in an environment; (ii) a critic that estimates the potential return of being in a specific state and taking an action.
+    </p>
+
+    <h2>What is Model-Predictive Control?</h2>
+    <p>
+        <br>Model-predictive control (MPC) learns a model of the environment and uses it to plan actions. MPC is sample-efficient but computationally expensive.
+        <br>MPC has two intriguing properties that we aim to capture in <i>model-free</i> D2AC:
+        <br>(i) MPC tends to model a distribution rather than a point estimate of future returns;
+        <br>(ii) MPC uses an iterative refinement process on action proposals, akin to denoising diffusion for policy improvement.
+    </p>
+
+    <h2>What is D2 Actor Critic?</h2>
+    <p>
+        <br>D2AC employs distributional critics to model return distributions, and additionally applies the clipped double Q-learning technique to make Q-function estimates more accurate.
+        <br>D2AC uses a denoising diffusion model for the policy network, and derives a novel and simplified policy improvement objective to supervise each step of the denoising process so that action proposals can be iteratively refined at inference.
+    </p>
+
+    <h2>Video of D2AC Policies</h2>
+    <p></p>
+    <p>
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/dog_run_3_video.webm">
+    </video>
+
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/humanoid-run-video-v3.webm">
+    </video>
+
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/quadruped_v2.webm">
+    </video>
     </p>
 
     <p>
-        <img src="./media/d2ac-web-viz.png" width="95%" height="auto" alt="d2ac-overall" class="center">
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/push.webm">
+    </video>
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/pick_and_place.webm">
+    </video>
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/slide.webm">
+    </video>
     </p>
 
+    <p>
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/manipulate_pen_rotate.webm">
+    </video>
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/manipulate_blockz.webm">
+    </video>
+    <video autoplay loop muted controls width="31%" height="auto">
+        <source src="media/manipulate_egg_rotate.webm">
+    </video>
+    </p>
+    
 </article>
 </body>
 </html>
