@@ -255,3 +255,24 @@ a {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.code-button {
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px; /* Adjusts spacing from the title */
+    transition: background-color 0.3s;
+}
+
+.code-button:hover {
+    background-color: #0056b3;
+}
+
+.button-container {
+    text-align: center;
+}
