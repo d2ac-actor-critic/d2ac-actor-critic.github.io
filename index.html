@@ -4,109 +4,260 @@
     <meta charset="UTF-8">
     <title>D2AC: Diffusion Actor meets Distributional Critic</title>
     <meta name="description"
-          content="We develop a new model-free reinforcement learning (RL) algorithm: D2AC. 
-          Motivated by recent advances in model-based RL, we make two adjustments to the typical actor critic RL pipeline. 
-          First, we learn distributional critics with a novel fusion of distributional RL and clipped double Q-learning. 
-          Second, we use a diffusion model to parameterize the policy, and derive an efficient method for aligning the diffusion process with policy improvement. 
-          These changes are highly effective, resulting in highly performant model-free policies on a benchmark of eighteen hard RL tasks, 
-          including Humanoid, Dog, and Shadow Hand domains, spanning both dense-reward and goal-conditioned RL scenarios. D2AC significantly closes the performance gap between model-free and model-based RL methods, 
+          content="We develop a new model-free reinforcement learning (RL) algorithm: D2AC.
+          Motivated by recent advances in model-based RL, we make two adjustments to the typical actor critic RL pipeline.
+          First, we learn distributional critics with a novel fusion of distributional RL and clipped double Q-learning.
+          Second, we use a diffusion model to parameterize the policy, and derive an efficient method for aligning the diffusion process with policy improvement.
+          These changes are highly effective, resulting in highly performant model-free policies on a benchmark of eighteen hard RL tasks,
+          including Humanoid, Dog, and Shadow Hand domains, spanning both dense-reward and goal-conditioned RL scenarios. D2AC significantly closes the performance gap between model-free and model-based RL methods,
           while being at least four times faster to run than model-based counterparts.">
 
     <meta name="keywords" content="Actor Critic, Reinforcement Learning, Diffusion Models">
     <meta property="og:title" content="D2AC: Diffusion Actor meets Distributional Critic">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script type="text/javascript" id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
     </script>
 
 </head>
 <body>
+<canvas id="particle-canvas"></canvas>
 <article>
     <section id="frontmatter">
-        <h1>D2 Actor Critic:</h1>
-        <h1 style="margin-top: 20px;">Diffusion Actor Meets Distributional Critic</h1>
-        <h2 style="margin-top: 30px;"></h2>
+        <div class="title-wrapper">
+            <h1>D2 Actor Critic:</h1>
+            <h1 style="margin-top: 20px;">Diffusion Actor Meets Distributional Critic</h1>
+        </div>
+        <div id="authors" class="animate-on-scroll">
+            <span>Lunjun Zhang*</span>&nbsp;&nbsp;&nbsp;
+            <span>Shuo Han*</span>&nbsp;&nbsp;&nbsp;
+            <span>Hanrui Lyu</span>&nbsp;&nbsp;&nbsp;
+            <span>Bradly C. Stadie</span>
+            <br>
+            <span class="affiliations">University of Toronto&nbsp;&nbsp;&nbsp;&nbsp;Northwestern University</span>
+        </div>
+        <p class="venue animate-on-scroll">
+            In <b>Transactions on Machine Learning Research (TMLR)</b>, 2025.
+        </p>
     </section>
-    <div class="button-container">
+    <div class="button-container animate-on-scroll">
+        <a href="https://arxiv.org/abs/2510.03508" class="code-button">Paper</a>
         <a href="https://github.com/d2ac-actor-critic/d2ac-public" class="code-button">Code</a>
     </div>
-    <p>
-    We develop a new model-free reinforcement learning (RL) algorithm: <b>D2AC</b>. Motivated by recent advances in model-based RL, we make two adjustments to the typical actor critic RL pipeline. 
-    First, we learn distributional critics with a novel fusion of distributional RL and clipped double Q-learning. 
-    Second, we use a diffusion model to parameterize the policy, and derive an efficient method for aligning the diffusion process with policy improvement. 
-    These changes are highly effective, resulting in highly performant model-free policies on a benchmark of eighteen hard RL tasks, 
-    including Humanoid, Dog, and Shadow Hand domains, spanning both dense-reward and goal-conditioned RL scenarios. 
-    D2AC significantly closes the performance gap between model-free and model-based RL methods, 
-    while being at least four times faster to run than model-based counterparts.
-    </p>
 
-    <p>
-        <img src="./media/d2ac-web-viz.png" width="95%" height="auto" alt="d2ac-overall">
-    </p>
+    <section class="glass-card glass-card-tight animate-on-scroll">
+        <p>
+        We develop a new model-free reinforcement learning (RL) algorithm: <b>D2AC</b>. Motivated by recent advances in model-based RL, we make two adjustments to the typical actor critic RL pipeline.
+        First, we learn distributional critics with a novel fusion of distributional RL and clipped double Q-learning.
+        Second, we use a diffusion model to parameterize the policy, and derive an efficient method for aligning the diffusion process with policy improvement.
+        These changes are highly effective, resulting in highly performant model-free policies on a benchmark of eighteen hard RL tasks,
+        including Humanoid, Dog, and Shadow Hand domains, spanning both dense-reward and goal-conditioned RL scenarios.
+        D2AC significantly closes the performance gap between model-free and model-based RL methods,
+        while being at least four times faster to run than model-based counterparts.
+        </p>
+    </section>
 
-    <h2>What is an Actor-Critic method?</h2>
-    <p>
-        <br>Actor Critic is a class of methods for solving reinforcement learning problems, where an agent interacts with an environment to maximize the cumulative reward signals.
-        <br>In Actor Critic methods, there are only two components: (i) an actor that takes actions in an environment; (ii) a critic that estimates the potential return of being in a specific state and taking an action.
-    </p>
+    <section class="glass-card animate-on-scroll">
+        <p>
+            <img src="./media/d2ac-web-viz.png" width="95%" height="auto" alt="d2ac-overall">
+        </p>
+    </section>
 
-    <h2>What is Model-Predictive Control?</h2>
-    <p>
-        <br>Model-predictive control (MPC) learns a model of the environment and uses it to plan actions. MPC is sample-efficient but computationally expensive.
-        <br>MPC has two intriguing properties that we aim to capture in <i>model-free</i> D2AC:
-        <br>(i) MPC tends to model a distribution rather than a point estimate of future returns;
-        <br>(ii) MPC uses an iterative refinement process on action proposals, akin to denoising diffusion for policy improvement.
-    </p>
+    <section class="glass-card animate-on-scroll">
+        <h2>What is an Actor-Critic method?</h2>
+        <p>
+            <br>Actor Critic is a class of methods for solving reinforcement learning problems, where an agent interacts with an environment to maximize the cumulative reward signals.
+            <br>In Actor Critic methods, there are only two components: (i) an actor that takes actions in an environment; (ii) a critic that estimates the potential return of being in a specific state and taking an action.
+        </p>
+    </section>
 
-    <h2>What is D2 Actor Critic?</h2>
-    <p>
-        <br>D2AC employs distributional critics to model return distributions, and additionally applies the clipped double Q-learning technique to make Q-function estimates more accurate.
-        <br>D2AC uses a denoising diffusion model for the policy network, and derives a novel and simplified policy improvement objective to supervise each step of the denoising process so that action proposals can be iteratively refined at inference.
-    </p>
+    <section class="glass-card animate-on-scroll">
+        <h2>What is Model-Predictive Control?</h2>
+        <p>
+            <br>Model-predictive control (MPC) learns a model of the environment and uses it to plan actions. MPC is sample-efficient but computationally expensive.
+            <br>MPC has two intriguing properties that we aim to capture in <i>model-free</i> D2AC:
+            <br>(i) MPC tends to model a distribution rather than a point estimate of future returns;
+            <br>(ii) MPC uses an iterative refinement process on action proposals, akin to denoising diffusion for policy improvement.
+        </p>
+    </section>
 
-    <h2>Video of D2AC Policies</h2>
-    <p>
-        <br>No model-based planning is performed at either training or inference.
-    </p>
-    <p>
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/dog_run_3_video.webm">
-    </video>
+    <section class="glass-card animate-on-scroll">
+        <h2>What is D2 Actor Critic?</h2>
+        <p>
+            <br>D2AC employs distributional critics to model return distributions, and additionally applies the clipped double Q-learning technique to make Q-function estimates more accurate.
+            <br>D2AC uses a denoising diffusion model for the policy network, and derives a novel and simplified policy improvement objective to supervise each step of the denoising process so that action proposals can be iteratively refined at inference.
+        </p>
+    </section>
 
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/humanoid-run-video-v3.webm">
-    </video>
+    <section class="glass-card animate-on-scroll" id="video-section">
+        <h2>Video of D2AC Policies</h2>
+        <p>
+            <br>No model-based planning is performed at either training or inference.
+        </p>
+        <div class="video-row">
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/dog_run_3_video.webm">
+                </video>
+            </div>
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/humanoid-run-video-v3.webm">
+                </video>
+            </div>
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/quadruped_v2.webm">
+                </video>
+            </div>
+        </div>
+        <div class="video-row">
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/push.webm">
+                </video>
+            </div>
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/pick_and_place.webm">
+                </video>
+            </div>
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/slide.webm">
+                </video>
+            </div>
+        </div>
+        <div class="video-row">
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/manipulate_pen_rotate.webm">
+                </video>
+            </div>
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/manipulate_blockz.webm">
+                </video>
+            </div>
+            <div class="video-card">
+                <video autoplay loop muted controls>
+                    <source src="media/manipulate_egg_rotate.webm">
+                </video>
+            </div>
+        </div>
+    </section>
 
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/quadruped_v2.webm">
-    </video>
-    </p>
-
-    <p>
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/push.webm">
-    </video>
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/pick_and_place.webm">
-    </video>
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/slide.webm">
-    </video>
-    </p>
-
-    <p>
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/manipulate_pen_rotate.webm">
-    </video>
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/manipulate_blockz.webm">
-    </video>
-    <video autoplay loop muted controls width="31%" height="auto">
-        <source src="media/manipulate_egg_rotate.webm">
-    </video>
-    </p>
-    
 </article>
+<script>
+(function() {
+    // Particle network
+    var canvas = document.getElementById('particle-canvas');
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var animationId;
+    var isMobile = window.innerWidth < 768;
+    var PARTICLE_COUNT = isMobile ? 30 : 80;
+    var CONNECTION_DISTANCE = isMobile ? 100 : 150;
+    var PARTICLE_SPEED = 0.3;
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resize() {
+        var dpr = window.devicePixelRatio || 1;
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        ctx.scale(dpr, dpr);
+    }
+
+    function createParticles() {
+        particles = [];
+        for (var i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                vx: (Math.random() - 0.5) * PARTICLE_SPEED,
+                vy: (Math.random() - 0.5) * PARTICLE_SPEED,
+                radius: Math.random() * 1.5 + 0.5
+            });
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+        for (var i = 0; i < particles.length; i++) {
+            for (var j = i + 1; j < particles.length; j++) {
+                var dx = particles[i].x - particles[j].x;
+                var dy = particles[i].y - particles[j].y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < CONNECTION_DISTANCE) {
+                    var opacity = (1 - dist / CONNECTION_DISTANCE) * 0.15;
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'rgba(0, 229, 255, ' + opacity + ')';
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        for (var k = 0; k < particles.length; k++) {
+            var p = particles[k];
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 229, 255, 0.4)';
+            ctx.fill();
+
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < 0) p.x = window.innerWidth;
+            if (p.x > window.innerWidth) p.x = 0;
+            if (p.y < 0) p.y = window.innerHeight;
+            if (p.y > window.innerHeight) p.y = 0;
+        }
+
+        animationId = requestAnimationFrame(draw);
+    }
+
+    if (!prefersReducedMotion) {
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                cancelAnimationFrame(animationId);
+            } else {
+                animationId = requestAnimationFrame(draw);
+            }
+        });
+
+        window.addEventListener('resize', function() {
+            resize();
+            createParticles();
+        });
+
+        resize();
+        createParticles();
+        draw();
+    }
+
+    // Scroll-triggered animations
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.animate-on-scroll, .video-card').forEach(function(el) {
+        observer.observe(el);
+    });
+})();
+</script>
 </body>
 </html>
